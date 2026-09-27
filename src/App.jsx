@@ -22,6 +22,7 @@ const portraits = [
 
 function App() {
   const sceneRef = useRef(null)
+  const sceneProgressRef = useRef(0)
 
   useEffect(() => {
     const scene = sceneRef.current
@@ -57,25 +58,126 @@ function App() {
     const scene = sceneRef.current
     if (!scene) return undefined
 
-    let scrollFrame
-    const updateScroll = () => {
-      cancelAnimationFrame(scrollFrame)
-      scrollFrame = requestAnimationFrame(() => {
-        const distance = Math.max(window.innerHeight * 2, 1)
-        const progress = Math.min(Math.max(window.scrollY / distance, 0), 1)
-        scene.style.setProperty('--scroll-progress', progress.toFixed(3))
-        scene.classList.toggle('is-scrolling', progress > 0.02)
-      })
+    let gestureActive = false
+    let gestureReleaseTimer
+    let isAnimating = false
+    let animationFrame
+    let touchStartY = null
+
+    const previousHtmlOverflow = document.documentElement.style.overflow
+    const previousBodyOverflow = document.body.style.overflow
+
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    window.scrollTo(0, 0)
+
+    const renderProgress = (progress) => {
+      sceneProgressRef.current = progress
+      scene.style.setProperty('--scroll-progress', progress.toFixed(4))
+      scene.classList.toggle('is-scrolling', progress > 0.02)
+      scene.dataset.scene = progress > 0.5 ? '1' : '0'
     }
 
-    updateScroll()
-    window.addEventListener('scroll', updateScroll, { passive: true })
-    window.addEventListener('resize', updateScroll)
+    renderProgress(sceneProgressRef.current)
+
+    const animateToScene = (target) => {
+      if (isAnimating || target === sceneProgressRef.current) return
+
+      cancelAnimationFrame(animationFrame)
+
+      const startProgress = sceneProgressRef.current
+      const distance = target - startProgress
+      const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 1200
+      const startedAt = performance.now()
+      isAnimating = true
+
+      const animate = (now) => {
+        const elapsed = Math.min((now - startedAt) / duration, 1)
+        const eased = elapsed < 0.5
+          ? 4 * elapsed * elapsed * elapsed
+          : 1 - Math.pow(-2 * elapsed + 2, 3) / 2
+
+        renderProgress(startProgress + distance * eased)
+
+        if (elapsed < 1) {
+          animationFrame = requestAnimationFrame(animate)
+        } else {
+          renderProgress(target)
+          isAnimating = false
+        }
+      }
+
+      animationFrame = requestAnimationFrame(animate)
+    }
+
+    const moveOnePage = (direction) => {
+      if (isAnimating) return
+
+      const currentScene = sceneProgressRef.current >= 0.5 ? 1 : 0
+      const nextScene = Math.min(Math.max(currentScene + direction, 0), 1)
+
+      if (nextScene !== currentScene) animateToScene(nextScene)
+    }
+
+    const handleWheel = (event) => {
+      if (event.ctrlKey) return
+
+      event.preventDefault()
+      if (Math.abs(event.deltaY) < 4) return
+
+      if (isAnimating) return
+
+      clearTimeout(gestureReleaseTimer)
+      gestureReleaseTimer = window.setTimeout(() => {
+        gestureActive = false
+      }, 140)
+
+      if (gestureActive) return
+
+      gestureActive = true
+      moveOnePage(Math.sign(event.deltaY))
+    }
+
+    const handleKeyDown = (event) => {
+      const direction = ['ArrowDown', 'PageDown', ' '].includes(event.key)
+        ? 1
+        : ['ArrowUp', 'PageUp'].includes(event.key)
+          ? -1
+          : 0
+
+      if (direction === 0) return
+      event.preventDefault()
+      moveOnePage(direction)
+    }
+
+    const handleTouchStart = (event) => {
+      touchStartY = event.touches[0]?.clientY ?? null
+    }
+
+    const handleTouchEnd = (event) => {
+      if (touchStartY === null) return
+
+      const endY = event.changedTouches[0]?.clientY ?? touchStartY
+      const distance = touchStartY - endY
+      touchStartY = null
+
+      if (Math.abs(distance) >= 45) moveOnePage(Math.sign(distance))
+    }
+
+    window.addEventListener('wheel', handleWheel, { passive: false })
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchend', handleTouchEnd, { passive: true })
 
     return () => {
-      cancelAnimationFrame(scrollFrame)
-      window.removeEventListener('scroll', updateScroll)
-      window.removeEventListener('resize', updateScroll)
+      cancelAnimationFrame(animationFrame)
+      clearTimeout(gestureReleaseTimer)
+      window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchend', handleTouchEnd)
+      document.documentElement.style.overflow = previousHtmlOverflow
+      document.body.style.overflow = previousBodyOverflow
     }
   }, [])
 
@@ -106,15 +208,27 @@ function App() {
 
         <div className="walking-rig" aria-hidden="true">
           <div className="walking-rig-stage">
-            <div className="rig-leg rig-leg-left" />
-            <div className="rig-leg rig-leg-right" />
+            <div className="rig-leg rig-leg-left">
+              <span className="rig-calf">
+                <span className="rig-shoe">
+                  <img src="/walking_animation/shoe.png" alt="" />
+                </span>
+              </span>
+            </div>
+            <div className="rig-leg rig-leg-right">
+              <span className="rig-calf">
+                <span className="rig-shoe">
+                  <img src="/walking_animation/shoe.png" alt="" />
+                </span>
+              </span>
+            </div>
 
             <img className="rig-part rig-throat" src="/walking_animation/throat.png" alt="" />
+            <img className="rig-part rig-hair" src="/walking_animation/hair.png" alt="" />
+            <img className="rig-part rig-head" src="/walking_animation/head.png" alt="" />
             <img className="rig-part rig-body" src="/walking_animation/body.png" alt="" />
 
             <div className="rig-part-group rig-head-group">
-              <img className="rig-part rig-head" src="/walking_animation/head.png" alt="" />
-              <img className="rig-part rig-hair" src="/walking_animation/hair.png" alt="" />
               <img className="rig-part rig-headphone" src="/walking_animation/headphone.png" alt="" />
               <img className="rig-part rig-cat" src="/walking_animation/cat.png" alt="" />
             </div>

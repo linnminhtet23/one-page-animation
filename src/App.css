@@ -1,5 +1,7 @@
 .experience {
-  min-height: 300vh;
+  height: 100svh;
+  min-height: 620px;
+  overflow: hidden;
   background: #fff7e9;
 }
 
@@ -7,8 +9,7 @@
   --pointer-x: 0;
   --pointer-y: 0;
   --scroll-progress: 0;
-  position: sticky;
-  top: 0;
+  position: relative;
   height: 100svh;
   min-height: 620px;
   overflow: hidden;
@@ -29,6 +30,9 @@
   letter-spacing: -.055em;
   color: #2247ab;
   text-shadow: 0 2px 0 rgba(255, 255, 255, .22);
+  opacity: clamp(0, calc(1 - var(--scroll-progress) * 3), 1);
+  transform: translateY(calc(var(--scroll-progress) * -24px));
+  will-change: opacity, transform;
 }
 
 .portrait-field, .outro { position: absolute; inset: 0; }
@@ -155,14 +159,21 @@
   user-select: none;
 }
 
-.rig-throat { z-index: 2; }
-.rig-body { z-index: 4; }
-.rig-head-group { z-index: 5; animation: rig-head-bob 1.55s ease-in-out infinite; }
-.rig-arm { z-index: 6; }
+.rig-hair { z-index: 2; animation: rig-head-bob 1.55s ease-in-out infinite; }
+.rig-throat { z-index: 3; }
+.rig-head { z-index: 4; animation: rig-head-bob 1.55s ease-in-out infinite; }
+.rig-body { z-index: 5; }
+.rig-head-group { z-index: 6; animation: rig-head-bob 1.55s ease-in-out infinite; }
+.rig-arm { z-index: 7; }
 
 .rig-arm-left {
-  transform-origin: 55% 32%;
+  z-index: 3;
+  transform-origin: 65.5% 30.5%;
   animation: rig-arm-left 1.45s ease-in-out infinite alternate;
+}
+
+.rig-arm-left .rig-part:last-child {
+  transform: translate(-1.8%, -1.2%);
 }
 
 .rig-arm-right {
@@ -173,41 +184,99 @@
 .rig-leg {
   position: absolute;
   z-index: 1;
-  top: 53%;
-  width: 18%;
-  height: 40%;
-  transform-origin: 50% 4%;
+  top: 52.5%;
+  width: 24%;
+  height: 22%;
+  transform-origin: 50% 10%;
 }
 
 .rig-leg::before {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 8% 8% 24% 20%;
+  border-radius: 4% 5% 12% 10%;
   background: #2949a6;
-  clip-path: polygon(4% 0, 96% 0, 84% 100%, 10% 100%);
+  clip-path: polygon(1% 0, 99% 0, 95% 100%, 6% 100%);
 }
 
-.rig-leg::after {
+.rig-calf {
+  position: absolute;
+  z-index: -1;
+  left: 5%;
+  top: 70%;
+  width: 91%;
+  height: 106%;
+  border-radius: 5% 7% 12% 9%;
+  background: #2949a6;
+  transform-origin: 50% 7%;
+}
+
+.rig-calf::after {
   content: '';
   position: absolute;
-  right: -6%;
-  bottom: -4%;
-  width: 94%;
-  height: 11%;
-  border: clamp(2px, .35vmin, 5px) solid #2949a6;
-  border-radius: 24% 52% 44% 28%;
-  background: #fff;
+  z-index: 3;
+  inset: 0;
+  border-radius: inherit;
+  background: #2949a6;
+  pointer-events: none;
+}
+
+.rig-shoe {
+  position: absolute;
+  z-index: 2;
+  right: -7%;
+  bottom: -34%;
+  width: 108%;
+  aspect-ratio: 196 / 177;
+  overflow: hidden;
+}
+
+.rig-shoe img {
+  position: absolute;
+  top: -850%;
+  left: -174%;
+  width: 510%;
+  max-width: none;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
 }
 
 .rig-leg-left {
-  left: 34%;
+  z-index: 2;
+  left: 28%;
   animation: rig-leg-left 1.35s ease-in-out infinite alternate;
 }
 
 .rig-leg-right {
   left: 50%;
   animation: rig-leg-right 1.35s ease-in-out infinite alternate;
+}
+
+.rig-leg-left::before {
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 5% 100%);
+}
+
+.rig-leg-right::before {
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 10% 100%);
+}
+
+.rig-leg-left .rig-calf {
+  left: 4%;
+  width: 88%;
+}
+
+.rig-leg-right .rig-calf {
+  left: 10%;
+  width: 86%;
+}
+
+.rig-leg-left .rig-calf {
+  animation: rig-knee-left 1.35s ease-in-out infinite alternate;
+}
+
+.rig-leg-right .rig-calf {
+  animation: rig-knee-right 1.35s ease-in-out infinite alternate;
 }
 
 .outro {
@@ -365,13 +434,13 @@
 }
 
 @keyframes rig-head-bob {
-  0%, 100% { transform: rotate(-1.5deg) translateY(-.5%); }
-  50% { transform: rotate(1.5deg) translateY(.7%); }
+  0%, 100% { transform: rotate(-.4deg) translateY(-.15%); }
+  50% { transform: rotate(.4deg) translateY(.2%); }
 }
 
 @keyframes rig-arm-left {
-  from { transform: rotate(-5deg); }
-  to { transform: rotate(6deg); }
+  from { transform: rotate(-2deg); }
+  to { transform: rotate(4deg); }
 }
 
 @keyframes rig-arm-right {
@@ -380,13 +449,23 @@
 }
 
 @keyframes rig-leg-left {
-  from { transform: rotate(-7deg) translateY(-1%); }
-  to { transform: rotate(9deg) translateY(1%); }
+  from { transform: rotate(-3deg); }
+  to { transform: rotate(4deg); }
 }
 
 @keyframes rig-leg-right {
-  from { transform: rotate(8deg) translateY(1%); }
-  to { transform: rotate(-8deg) translateY(-1%); }
+  from { transform: rotate(4deg); }
+  to { transform: rotate(-3deg); }
+}
+
+@keyframes rig-knee-left {
+  from { transform: rotate(2deg); }
+  to { transform: rotate(8deg) translateY(-1%); }
+}
+
+@keyframes rig-knee-right {
+  from { transform: rotate(8deg) translateY(-1%); }
+  to { transform: rotate(2deg); }
 }
 
 @media (max-aspect-ratio: 4 / 5) {
