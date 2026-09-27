@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const portraits = [
@@ -20,9 +20,77 @@ const portraits = [
   { file: 'img16.webp', className: 'portrait-16', depth: 1.7 },
 ]
 
+function WalkingRig({ className = '' }) {
+  return (
+    <div className={`walking-rig ${className}`.trim()} aria-hidden="true">
+      <div className="walking-rig-stage">
+        <div className="rig-leg rig-leg-left">
+          <span className="rig-calf">
+            <span className="rig-shoe">
+              <img src="/walking_animation/shoe.png" alt="" />
+            </span>
+          </span>
+        </div>
+        <div className="rig-leg rig-leg-right">
+          <span className="rig-calf">
+            <span className="rig-shoe">
+              <img src="/walking_animation/shoe.png" alt="" />
+            </span>
+          </span>
+        </div>
+
+        <img className="rig-part rig-throat" src="/walking_animation/throat.png" alt="" />
+        <img className="rig-part rig-hair" src="/walking_animation/hair.png" alt="" />
+        <img className="rig-part rig-head" src="/walking_animation/head.png" alt="" />
+        <img className="rig-part rig-body" src="/walking_animation/body.png" alt="" />
+
+        <div className="rig-part-group rig-head-group">
+          <img className="rig-part rig-headphone" src="/walking_animation/headphone.png" alt="" />
+          <img className="rig-part rig-cat" src="/walking_animation/cat.png" alt="" />
+        </div>
+
+        <div className="rig-part-group rig-arm rig-arm-left">
+          <img className="rig-part" src="/walking_animation/left_arm.png" alt="" />
+          <img className="rig-part" src="/walking_animation/left_hand.png" alt="" />
+        </div>
+
+        <div className="rig-part-group rig-arm rig-arm-right">
+          <img className="rig-part" src="/walking_animation/right_arm.png" alt="" />
+          <img className="rig-part" src="/walking_animation/right_hand.png" alt="" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function App() {
+  const [loaderVisible, setLoaderVisible] = useState(true)
+  const [loaderLeaving, setLoaderLeaving] = useState(false)
   const sceneRef = useRef(null)
   const sceneProgressRef = useRef(0)
+
+  useEffect(() => {
+    const startedAt = performance.now()
+    let leaveTimer
+    let removeTimer
+
+    const finishLoading = () => {
+      const minimumWait = Math.max(1800 - (performance.now() - startedAt), 0)
+      leaveTimer = window.setTimeout(() => {
+        setLoaderLeaving(true)
+        removeTimer = window.setTimeout(() => setLoaderVisible(false), 520)
+      }, minimumWait)
+    }
+
+    if (document.readyState === 'complete') finishLoading()
+    else window.addEventListener('load', finishLoading, { once: true })
+
+    return () => {
+      window.removeEventListener('load', finishLoading)
+      clearTimeout(leaveTimer)
+      clearTimeout(removeTimer)
+    }
+  }, [])
 
   useEffect(() => {
     const scene = sceneRef.current
@@ -212,6 +280,26 @@ function App() {
 
   return (
     <div className="experience">
+      {loaderVisible && (
+        <div
+          className={`site-loader${loaderLeaving ? ' is-leaving' : ''}`}
+          role="status"
+          aria-label="Loading Paw Parade"
+        >
+          <div className="loader-character-wrap" aria-hidden="true">
+            <WalkingRig className="loader-walking-rig" />
+            <span className="loader-shadow" />
+          </div>
+          <p className="loader-word" aria-hidden="true">
+            {'LOADING...'.split('').map((letter, index) => (
+              <span style={{ '--loader-letter': index }} key={`${letter}-${index}`}>
+                {letter}
+              </span>
+            ))}
+          </p>
+        </div>
+      )}
+
       <main className="floating-scene" ref={sceneRef}>
         <h1 className="brand">Paw Parade</h1>
 
@@ -249,44 +337,7 @@ function App() {
           </p>
         </section>
 
-        <div className="walking-rig" aria-hidden="true">
-          <div className="walking-rig-stage">
-            <div className="rig-leg rig-leg-left">
-              <span className="rig-calf">
-                <span className="rig-shoe">
-                  <img src="/walking_animation/shoe.png" alt="" />
-                </span>
-              </span>
-            </div>
-            <div className="rig-leg rig-leg-right">
-              <span className="rig-calf">
-                <span className="rig-shoe">
-                  <img src="/walking_animation/shoe.png" alt="" />
-                </span>
-              </span>
-            </div>
-
-            <img className="rig-part rig-throat" src="/walking_animation/throat.png" alt="" />
-            <img className="rig-part rig-hair" src="/walking_animation/hair.png" alt="" />
-            <img className="rig-part rig-head" src="/walking_animation/head.png" alt="" />
-            <img className="rig-part rig-body" src="/walking_animation/body.png" alt="" />
-
-            <div className="rig-part-group rig-head-group">
-              <img className="rig-part rig-headphone" src="/walking_animation/headphone.png" alt="" />
-              <img className="rig-part rig-cat" src="/walking_animation/cat.png" alt="" />
-            </div>
-
-            <div className="rig-part-group rig-arm rig-arm-left">
-              <img className="rig-part" src="/walking_animation/left_arm.png" alt="" />
-              <img className="rig-part" src="/walking_animation/left_hand.png" alt="" />
-            </div>
-
-            <div className="rig-part-group rig-arm rig-arm-right">
-              <img className="rig-part" src="/walking_animation/right_arm.png" alt="" />
-              <img className="rig-part" src="/walking_animation/right_hand.png" alt="" />
-            </div>
-          </div>
-        </div>
+        <WalkingRig />
 
         <section className="outro" aria-label="Paw Parade collection">
           <span className="blob blob-one" aria-hidden="true" />

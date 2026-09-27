@@ -1,3 +1,70 @@
+.site-loader {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  overflow: hidden;
+  background: #fffdf9;
+  opacity: 1;
+  transition: opacity .5s cubic-bezier(.55, 0, .35, 1), visibility .5s;
+}
+
+.site-loader.is-leaving {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.loader-character-wrap {
+  position: relative;
+  width: clamp(118px, 10vw, 170px);
+  aspect-ratio: 1000 / 1700;
+  animation: loader-travel 1.25s ease-in-out infinite alternate;
+}
+
+.site-loader .loader-walking-rig {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  aspect-ratio: 1000 / 1700;
+  opacity: 1;
+  transform: none;
+}
+
+.loader-shadow {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: -4px;
+  width: 72%;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(36, 72, 168, .13);
+  filter: blur(2px);
+  animation: loader-shadow-step .44s ease-in-out infinite alternate;
+}
+
+.loader-word {
+  display: flex;
+  gap: .42em;
+  margin: 0;
+  padding-left: .42em;
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  font-size: clamp(.78rem, 1.2vw, 1.08rem);
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: #2448a8;
+}
+
+.loader-word span {
+  display: inline-block;
+  animation: loader-letter .9s ease-in-out infinite;
+  animation-delay: calc(var(--loader-letter) * .07s);
+}
+
 .experience {
   height: 100svh;
   min-height: 620px;
@@ -493,6 +560,21 @@
   }
 }
 
+@keyframes loader-travel {
+  from { transform: translateX(-18px); }
+  to { transform: translateX(18px); }
+}
+
+@keyframes loader-shadow-step {
+  from { opacity: .75; transform: translateX(-50%) scaleX(1); }
+  to { opacity: .3; transform: translateX(-50%) scaleX(.72); }
+}
+
+@keyframes loader-letter {
+  0%, 55%, 100% { opacity: .42; transform: translateY(0); }
+  25% { opacity: 1; transform: translateY(-3px); }
+}
+
 @keyframes background-sweep-left {
   from {
     transform: translate3d(135vw, 0, 0) rotate(0deg);
@@ -601,6 +683,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .loader-character-wrap,
+  .loader-walking-rig,
+  .loader-shadow,
+  .loader-word span,
   .portrait,
   .portrait img,
   .blob,
