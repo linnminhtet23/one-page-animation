@@ -73,36 +73,61 @@ function App() {
 
     const renderProgress = (progress) => {
       sceneProgressRef.current = progress
-      scene.style.setProperty('--scroll-progress', progress.toFixed(4))
+      const introProgress = Math.min(progress, 1)
+      const walkProgress = Math.max(progress - 1, 0)
+
+      scene.style.setProperty('--scroll-progress', introProgress.toFixed(4))
+      scene.style.setProperty('--walk-progress', walkProgress.toFixed(4))
       scene.classList.toggle('is-scrolling', progress > 0.02)
-      scene.dataset.scene = progress > 0.5 ? '1' : '0'
+      scene.dataset.scene = String(Math.round(progress))
     }
 
     renderProgress(sceneProgressRef.current)
 
-    const animateToScene = (target) => {
+    const easeInOutCubic = (value) => value < 0.5
+      ? 4 * value * value * value
+      : 1 - Math.pow(-2 * value + 2, 3) / 2
+
+    const animateToScene = (target, wraps = false) => {
       if (isAnimating || target === sceneProgressRef.current) return
 
       cancelAnimationFrame(animationFrame)
 
       const startProgress = sceneProgressRef.current
       const distance = target - startProgress
-      const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 1200
+      const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 1
+        : wraps
+          ? 850
+          : 1200
       const startedAt = performance.now()
+      let hasSwappedScene = false
       isAnimating = true
 
       const animate = (now) => {
         const elapsed = Math.min((now - startedAt) / duration, 1)
-        const eased = elapsed < 0.5
-          ? 4 * elapsed * elapsed * elapsed
-          : 1 - Math.pow(-2 * elapsed + 2, 3) / 2
+        const eased = easeInOutCubic(elapsed)
 
-        renderProgress(startProgress + distance * eased)
+        if (wraps) {
+          if (elapsed >= 0.5 && !hasSwappedScene) {
+            renderProgress(target)
+            hasSwappedScene = true
+          }
+
+          const fadeProgress = elapsed < 0.5 ? elapsed * 2 : (elapsed - 0.5) * 2
+          const fade = elapsed < 0.5
+            ? 1 - easeInOutCubic(fadeProgress)
+            : easeInOutCubic(fadeProgress)
+          scene.style.opacity = fade.toFixed(4)
+        } else {
+          renderProgress(startProgress + distance * eased)
+        }
 
         if (elapsed < 1) {
           animationFrame = requestAnimationFrame(animate)
         } else {
           renderProgress(target)
+          scene.style.opacity = '1'
           isAnimating = false
         }
       }
@@ -113,10 +138,13 @@ function App() {
     const moveOnePage = (direction) => {
       if (isAnimating) return
 
-      const currentScene = sceneProgressRef.current >= 0.5 ? 1 : 0
-      const nextScene = Math.min(Math.max(currentScene + direction, 0), 1)
+      const currentScene = Math.round(sceneProgressRef.current)
+      const wraps = (currentScene === 2 && direction > 0) || (currentScene === 0 && direction < 0)
+      const nextScene = wraps
+        ? direction > 0 ? 0 : 2
+        : currentScene + direction
 
-      if (nextScene !== currentScene) animateToScene(nextScene)
+      animateToScene(nextScene, wraps)
     }
 
     const handleWheel = (event) => {
@@ -176,6 +204,7 @@ function App() {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('touchstart', handleTouchStart)
       window.removeEventListener('touchend', handleTouchEnd)
+      scene.style.opacity = '1'
       document.documentElement.style.overflow = previousHtmlOverflow
       document.body.style.overflow = previousBodyOverflow
     }
@@ -205,6 +234,20 @@ function App() {
             <img src="/floating_animation/human.webp" alt="" draggable="false" />
           </div>
         </div>
+
+        <div className="walking-background" aria-hidden="true">
+          <img src="/animal.webp" alt="" draggable="false" />
+        </div>
+
+        <section className="walking-copy" aria-label="About Paw Parade">
+          <p>
+            A joyful circle of motion, color, and curious companions—made for
+            everyone who dreams of living among animals.
+          </p>
+          <p>
+            Every paw, hop, and wag brings a little more warmth to the parade.
+          </p>
+        </section>
 
         <div className="walking-rig" aria-hidden="true">
           <div className="walking-rig-stage">

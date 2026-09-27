@@ -9,6 +9,7 @@
   --pointer-x: 0;
   --pointer-y: 0;
   --scroll-progress: 0;
+  --walk-progress: 0;
   position: relative;
   height: 100svh;
   min-height: 620px;
@@ -126,7 +127,7 @@
 .walking-rig {
   position: absolute;
   z-index: 22;
-  left: 50%;
+  left: calc(50% - var(--walk-progress) * 25vw);
   top: 100%;
   width: 121vmin;
   aspect-ratio: 1000 / 1700;
@@ -134,11 +135,58 @@
   transform:
     translate(-50%, -50%)
     translateY(calc(var(--scroll-progress) * -36vh))
-    scale(calc(1 - var(--scroll-progress) * .596))
-    rotate(calc(var(--scroll-progress) * -90deg));
+    scale(calc(1 - var(--scroll-progress) * .596 + var(--walk-progress) * .08))
+    rotate(calc(var(--scroll-progress) * -90deg + var(--walk-progress) * 90deg));
   transform-origin: center;
   pointer-events: none;
   will-change: transform, opacity;
+}
+
+.walking-background {
+  position: absolute;
+  z-index: 2;
+  inset: -42vmax;
+  display: grid;
+  place-items: center;
+  opacity: clamp(0, calc(var(--walk-progress) * 1.35), .72);
+  transform: scale(calc(.82 + var(--walk-progress) * .18));
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.walking-background img {
+  width: min(154vmax, 2100px);
+  aspect-ratio: 1;
+  object-fit: contain;
+  animation: animal-orbit 24s linear infinite;
+  user-select: none;
+}
+
+.walking-copy {
+  position: absolute;
+  z-index: 8;
+  top: 12%;
+  left: 42%;
+  width: min(52vw, 820px);
+  color: #2448a8;
+  opacity: clamp(0, calc((var(--walk-progress) - .16) * 2.8), 1);
+  transform: translateY(calc((1 - var(--walk-progress)) * 32px));
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.walking-copy p {
+  max-width: 48em;
+  margin: 0;
+  font-size: clamp(.72rem, 1.25vw, 1.15rem);
+  font-weight: 600;
+  line-height: 2.35;
+  letter-spacing: clamp(.22em, .55vw, .48em);
+}
+
+.walking-copy p + p {
+  width: 88%;
+  margin-top: clamp(30px, 7vh, 76px);
 }
 
 .walking-rig-stage,
@@ -151,7 +199,7 @@
 }
 
 .walking-rig-stage {
-  animation: rig-drift 2.2s ease-in-out infinite;
+  animation: rig-drift 1.4s ease-in-out infinite;
 }
 
 .rig-part {
@@ -159,17 +207,17 @@
   user-select: none;
 }
 
-.rig-hair { z-index: 2; animation: rig-head-bob 1.55s ease-in-out infinite; }
+.rig-hair { z-index: 2; animation: rig-head-bob 1s ease-in-out infinite; }
 .rig-throat { z-index: 3; }
-.rig-head { z-index: 4; animation: rig-head-bob 1.55s ease-in-out infinite; }
+.rig-head { z-index: 4; animation: rig-head-bob 1s ease-in-out infinite; }
 .rig-body { z-index: 5; }
-.rig-head-group { z-index: 6; animation: rig-head-bob 1.55s ease-in-out infinite; }
+.rig-head-group { z-index: 6; animation: rig-head-bob 1s ease-in-out infinite; }
 .rig-arm { z-index: 7; }
 
 .rig-arm-left {
   z-index: 3;
   transform-origin: 65.5% 30.5%;
-  animation: rig-arm-left 1.45s ease-in-out infinite alternate;
+  animation: rig-arm-left .92s ease-in-out infinite alternate;
 }
 
 .rig-arm-left .rig-part:last-child {
@@ -178,7 +226,7 @@
 
 .rig-arm-right {
   transform-origin: 40% 35%;
-  animation: rig-arm-right 1.45s ease-in-out infinite alternate;
+  animation: rig-arm-right .92s ease-in-out infinite alternate;
 }
 
 .rig-leg {
@@ -245,12 +293,12 @@
 .rig-leg-left {
   z-index: 2;
   left: 28%;
-  animation: rig-leg-left 1.35s ease-in-out infinite alternate;
+  animation: rig-leg-left .85s ease-in-out infinite alternate;
 }
 
 .rig-leg-right {
   left: 50%;
-  animation: rig-leg-right 1.35s ease-in-out infinite alternate;
+  animation: rig-leg-right .85s ease-in-out infinite alternate;
 }
 
 .rig-leg-left::before {
@@ -272,11 +320,11 @@
 }
 
 .rig-leg-left .rig-calf {
-  animation: rig-knee-left 1.35s ease-in-out infinite alternate;
+  animation: rig-knee-left .85s ease-in-out infinite alternate;
 }
 
 .rig-leg-right .rig-calf {
-  animation: rig-knee-right 1.35s ease-in-out infinite alternate;
+  animation: rig-knee-right .85s ease-in-out infinite alternate;
 }
 
 .outro {
@@ -296,6 +344,11 @@
   line-height: .8;
   letter-spacing: -.06em;
   color: #2448a8;
+  transform:
+    translate(calc(var(--walk-progress) * -32vw), calc(var(--walk-progress) * -36vh))
+    scale(calc(1 - var(--walk-progress) * .64));
+  transform-origin: center;
+  will-change: transform;
 }
 
 .blob {
@@ -369,6 +422,18 @@
   animation-duration: 11s;
 }
 
+.floating-scene[data-scene='2'] .blob {
+  animation-name: background-sweep-left;
+  animation-timing-function: linear;
+}
+
+.floating-scene[data-scene='2'] .blob-one { top: 4vh; }
+.floating-scene[data-scene='2'] .blob-two { top: 18vh; }
+.floating-scene[data-scene='2'] .blob-three { top: 60vh; }
+.floating-scene[data-scene='2'] .blob-four { top: 40vh; }
+.floating-scene[data-scene='2'] .blob-five { top: 76vh; }
+.floating-scene[data-scene='2'] .blob-six { top: 10vh; }
+
 .social-links {
   position: absolute;
   z-index: 45;
@@ -426,6 +491,21 @@
   100% {
     transform: translate3d(var(--drift), -70vh, 0) rotate(-280deg);
   }
+}
+
+@keyframes background-sweep-left {
+  from {
+    transform: translate3d(135vw, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(-135vw, 0, 0) rotate(-220deg);
+  }
+}
+
+@keyframes animal-orbit {
+  from { transform: rotate(0deg) scale(1.02); }
+  50% { transform: rotate(180deg) scale(.96); }
+  to { transform: rotate(360deg) scale(1.02); }
 }
 
 @keyframes rig-drift {
@@ -487,6 +567,29 @@
   .portrait-15 { --x: 73%; --y: 78%; }
   .portrait-16 { --x: 50%; --y: 26%; }
   .first-page-hero { --x: 50%; --y: 94%; --size: 76vh; }
+  .walking-rig {
+    left: calc(50% - var(--walk-progress) * 19vw);
+    top: calc(100% + var(--walk-progress) * 20svh);
+  }
+  .outro h2 {
+    transform:
+      translate(calc(var(--walk-progress) * -23vw), calc(var(--walk-progress) * -38vh))
+      scale(calc(1 - var(--walk-progress) * .58));
+  }
+  .walking-copy {
+    top: 18%;
+    left: 42%;
+    width: 54%;
+  }
+  .walking-copy p {
+    font-size: clamp(.58rem, 2.35vw, .78rem);
+    line-height: 2.05;
+    letter-spacing: .18em;
+  }
+  .walking-copy p + p {
+    width: 100%;
+    margin-top: 4vh;
+  }
 }
 
 @media (max-width: 620px) {
@@ -501,6 +604,7 @@
   .portrait,
   .portrait img,
   .blob,
+  .walking-background img,
   .walking-rig-stage,
   .rig-part-group,
   .rig-leg { animation: none; transition: none; }
