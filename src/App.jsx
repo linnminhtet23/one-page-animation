@@ -104,6 +104,33 @@ function App() {
           </div>
         </div>
 
+        <div className="walking-rig" aria-hidden="true">
+          <div className="walking-rig-stage">
+            <div className="rig-leg rig-leg-left" />
+            <div className="rig-leg rig-leg-right" />
+
+            <img className="rig-part rig-throat" src="/walking_animation/throat.png" alt="" />
+            <img className="rig-part rig-body" src="/walking_animation/body.png" alt="" />
+
+            <div className="rig-part-group rig-head-group">
+              <img className="rig-part rig-head" src="/walking_animation/head.png" alt="" />
+              <img className="rig-part rig-hair" src="/walking_animation/hair.png" alt="" />
+              <img className="rig-part rig-headphone" src="/walking_animation/headphone.png" alt="" />
+              <img className="rig-part rig-cat" src="/walking_animation/cat.png" alt="" />
+            </div>
+
+            <div className="rig-part-group rig-arm rig-arm-left">
+              <img className="rig-part" src="/walking_animation/left_arm.png" alt="" />
+              <img className="rig-part" src="/walking_animation/left_hand.png" alt="" />
+            </div>
+
+            <div className="rig-part-group rig-arm rig-arm-right">
+              <img className="rig-part" src="/walking_animation/right_arm.png" alt="" />
+              <img className="rig-part" src="/walking_animation/right_hand.png" alt="" />
+            </div>
+          </div>
+        </div>
+
         <section className="outro" aria-label="Paw Parade collection">
           <span className="blob blob-one" aria-hidden="true" />
           <span className="blob blob-two" aria-hidden="true" />
