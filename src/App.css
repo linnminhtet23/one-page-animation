@@ -1,5 +1,5 @@
 .experience {
-  min-height: 188vh;
+  min-height: 300vh;
   background: #fff7e9;
 }
 
@@ -35,9 +35,6 @@
 
 .portrait-field {
   z-index: 2;
-  transform: translateY(calc(var(--scroll-progress) * -28vh));
-  opacity: calc(1 - var(--scroll-progress) * .88);
-  transition: opacity .12s linear;
 }
 
 .portrait {
@@ -69,6 +66,17 @@
   animation-delay: var(--delay);
 }
 
+.portrait:not(.first-page-hero) {
+  opacity: clamp(0, calc(1 - var(--scroll-progress) * 2.2), 1);
+  transform:
+    translate(-50%, -50%)
+    translate(
+      calc(var(--pointer-x) * var(--depth) * 10px),
+      calc(var(--pointer-y) * var(--depth) * 8px - var(--scroll-progress) * 38vh)
+    )
+    rotate(var(--rotate));
+}
+
 /* Two close, irregular rings make the artwork read as one continuous crowd. */
 .portrait-1  { --x: 4%; --y: 17%; --size: 89vmin; --rotate: -5deg; --layer: 6; }
 .portrait-2  { --x: 34%; --y: 16%; --size: 87vmin; --rotate: 5deg; --layer: 4; }
@@ -96,33 +104,26 @@
   --delay: -.7s;
   aspect-ratio: 863 / 2000;
   animation-delay: .12s;
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(var(--scroll-progress) * -36vh))
+    scale(calc(1 - var(--scroll-progress) * .596))
+    rotate(calc(var(--scroll-progress) * -90deg));
+  transform-origin: center;
+  will-change: transform;
 }
 
 .first-page-hero img {
   object-fit: contain;
-  clip-path: inset(0 0 40% 0);
+  clip-path: inset(0 0 calc((1 - var(--scroll-progress)) * 40%) 0);
 }
-
-.falling-hero {
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  top: 50%;
-  width: min(36vw, 42vh);
-  aspect-ratio: 863 / 2000;
-  opacity: calc(var(--scroll-progress) * 1.3 - .3);
-  transform: translate(-50%, -50%) translateY(calc((1 - var(--scroll-progress)) * -94vh)) rotate(calc((1 - var(--scroll-progress)) * -10deg));
-  pointer-events: none;
-}
-
-.falling-hero img { width: 100%; height: 100%; object-fit: contain; }
 
 .outro {
   z-index: 1;
   display: grid;
   place-items: center;
-  background: #f8b83d;
-  opacity: calc(var(--scroll-progress) * 1.35 - .35);
+  background: #fff8ed;
+  opacity: clamp(0, calc((var(--scroll-progress) - .38) * 2.5), 1);
 }
 
 .outro h2 {
@@ -133,13 +134,79 @@
   font-size: clamp(4rem, 14vw, 13rem);
   line-height: .8;
   letter-spacing: -.06em;
-  color: #fff8e9;
+  color: #2448a8;
 }
 
-.blob { position: absolute; border-radius: 50%; filter: blur(1px); }
-.blob-one { width: 34vw; height: 34vw; left: -9vw; top: -12vw; background: #ef4d30; }
-.blob-two { width: 28vw; height: 28vw; right: -6vw; bottom: -8vw; background: #2449a8; }
-.blob-three { width: 17vw; height: 17vw; right: 12vw; top: 8vw; background: #ec65a4; }
+.blob {
+  --drift: 3vw;
+  position: absolute;
+  top: -42vh;
+  border-radius: 48% 52% 62% 38% / 39% 45% 55% 61%;
+  filter: blur(1px);
+  opacity: .82;
+  animation: background-rise 10s linear infinite;
+  animation-delay: var(--fall-delay, 0s);
+  will-change: transform;
+}
+
+.blob-one {
+  --drift: 8vw;
+  --fall-delay: -8s;
+  width: 30vw;
+  height: 24vw;
+  left: -8vw;
+  background: #cfd2ff;
+}
+
+.blob-two {
+  --drift: -7vw;
+  --fall-delay: -3s;
+  width: 25vw;
+  height: 22vw;
+  right: -5vw;
+  background: #b9e6fb;
+  animation-duration: 12s;
+}
+
+.blob-three {
+  --drift: 5vw;
+  --fall-delay: -5.5s;
+  width: 15vw;
+  height: 13vw;
+  left: 65vw;
+  background: #ffc6c4;
+  animation-duration: 8s;
+}
+
+.blob-four {
+  --drift: -5vw;
+  --fall-delay: -1.5s;
+  width: 11vw;
+  height: 16vw;
+  left: 21vw;
+  background: #bce8fa;
+  animation-duration: 9s;
+}
+
+.blob-five {
+  --drift: 6vw;
+  --fall-delay: -10s;
+  width: 9vw;
+  height: 9vw;
+  left: 47vw;
+  background: #ffd0d4;
+  animation-duration: 13s;
+}
+
+.blob-six {
+  --drift: -9vw;
+  --fall-delay: -6.5s;
+  width: 17vw;
+  height: 13vw;
+  left: 82vw;
+  background: #d8d4ff;
+  animation-duration: 11s;
+}
 
 .social-links {
   position: absolute;
@@ -191,6 +258,15 @@
   50% { transform: translateY(-9px) rotate(.35deg); }
 }
 
+@keyframes background-rise {
+  0% {
+    transform: translate3d(0, 170vh, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(var(--drift), -70vh, 0) rotate(-280deg);
+  }
+}
+
 @media (max-aspect-ratio: 4 / 5) {
   .portrait { --size: 76vh; }
   .portrait-1  { --x: 2%; --y: 24%; }
@@ -221,6 +297,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .portrait, .portrait img { animation: none; transition: none; }
+  .portrait, .portrait img, .blob { animation: none; transition: none; }
   .social-links a { transition: none; }
 }

@@ -61,7 +61,7 @@ function App() {
     const updateScroll = () => {
       cancelAnimationFrame(scrollFrame)
       scrollFrame = requestAnimationFrame(() => {
-        const distance = Math.max(window.innerHeight * 0.85, 1)
+        const distance = Math.max(window.innerHeight * 2, 1)
         const progress = Math.min(Math.max(window.scrollY / distance, 0), 1)
         scene.style.setProperty('--scroll-progress', progress.toFixed(3))
         scene.classList.toggle('is-scrolling', progress > 0.02)
@@ -104,14 +104,13 @@ function App() {
           </div>
         </div>
 
-        <div className="falling-hero" aria-hidden="true">
-          <img src="/floating_animation/human.webp" alt="" draggable="false" />
-        </div>
-
         <section className="outro" aria-label="Paw Parade collection">
           <span className="blob blob-one" aria-hidden="true" />
           <span className="blob blob-two" aria-hidden="true" />
           <span className="blob blob-three" aria-hidden="true" />
+          <span className="blob blob-four" aria-hidden="true" />
+          <span className="blob blob-five" aria-hidden="true" />
+          <span className="blob blob-six" aria-hidden="true" />
           <h2>Paw Parade</h2>
         </section>
 
