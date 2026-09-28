@@ -193,7 +193,7 @@
   width: min(154vmax, 2100px);
   aspect-ratio: 1;
   object-fit: contain;
-  animation: animal-orbit 24s linear infinite;
+  animation: animal-drift-left 18s linear infinite;
   user-select: none;
 }
 
@@ -415,10 +415,11 @@
 .blob {
   --drift: 3vw;
   position: absolute;
+  z-index: 3;
   top: -42vh;
   border-radius: 48% 52% 62% 38% / 39% 45% 55% 61%;
   filter: blur(1px);
-  opacity: .82;
+  opacity: clamp(0, calc((var(--scroll-progress) - .38) * 2.05), .82);
   animation: background-rise 10s linear infinite;
   animation-delay: var(--fall-delay, 0s);
   will-change: transform;
@@ -555,10 +556,9 @@
   }
 }
 
-@keyframes animal-orbit {
-  from { transform: rotate(0deg) scale(1.02); }
-  50% { transform: rotate(180deg) scale(.96); }
-  to { transform: rotate(360deg) scale(1.02); }
+@keyframes animal-drift-left {
+  from { transform: translate3d(16vw, 0, 0) scale(1.04); }
+  to { transform: translate3d(-16vw, 0, 0) scale(1.04); }
 }
 
 @keyframes rig-drift {

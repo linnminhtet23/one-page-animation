@@ -1,6 +1,6 @@
 const defaultSocialLinks = [
   { href: '#discord', label: 'Discord', symbol: '●' },
-  { href: '#community', label: 'Community', symbol: '♞' },
+  { href: '#community', label: 'Community', symbol: '▲' },
   { href: '#twitter', label: 'Twitter', symbol: '♥' },
 ]
 
