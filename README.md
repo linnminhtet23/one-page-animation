@@ -1,16 +1,30 @@
-# React + Vite
+# Paw Parade
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An animation-focused, single-page React experience inspired by the Fluffy Hugs reference website.
 
-Currently, two official plugins are available:
+## Technology
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React and Vite
+- Tailwind CSS for reusable layout, responsive, and interaction utilities
+- Custom CSS animations for the character rig and scene transitions
 
-## React Compiler
+## Live Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Website: [https://paw-parade.vercel.app/](https://paw-parade.vercel.app/)
+- Repository: [https://github.com/linnminhtet23/paw-parade](https://github.com/linnminhtet23/paw-parade)
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Requirements
+
+- Node.js 20 or newer
+- npm
+
+### Installation
+
+```bash
+git clone https://github.com/linnminhtet23/paw-parade.git
+cd paw-parade
+npm install
+npm run dev
+```

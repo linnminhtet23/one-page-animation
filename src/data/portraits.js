@@ -1,0 +1,18 @@
+export const portraits = [
+  { file: 'img1.webp', className: 'portrait-1', depth: 1.5 },
+  { file: 'img2.webp', className: 'portrait-2', depth: 1 },
+  { file: 'img3.webp', className: 'portrait-3', depth: 2 },
+  { file: 'img4.webp', className: 'portrait-4', depth: 1.2 },
+  { file: 'img5.webp', className: 'portrait-5', depth: 1.8 },
+  { file: 'img6.webp', className: 'portrait-6', depth: 2.3 },
+  { file: 'img7.webp', className: 'portrait-7', depth: 1.4 },
+  { file: 'img8.webp', className: 'portrait-8', depth: 2.1 },
+  { file: 'img9.webp', className: 'portrait-9', depth: 2.6 },
+  { file: 'img10.webp', className: 'portrait-10', depth: 1.8 },
+  { file: 'img11.webp', className: 'portrait-11', depth: 2.2 },
+  { file: 'img12.webp', className: 'portrait-12', depth: 1.5 },
+  { file: 'img13.webp', className: 'portrait-13', depth: 2.5 },
+  { file: 'img14.webp', className: 'portrait-14', depth: 2 },
+  { file: 'img15.webp', className: 'portrait-15', depth: 2.8 },
+  { file: 'img16.webp', className: 'portrait-16', depth: 1.7 },
+]

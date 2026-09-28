@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Montserrat:wght@500;600&display=swap');
+@import "tailwindcss";
 
 :root {
   font-family: 'Montserrat', system-ui, sans-serif;
@@ -25,6 +26,5 @@ body {
 }
 
 button, a { font: inherit; }
-a { color: inherit; }
 img { display: block; }
 #root { min-height: 100vh; }
