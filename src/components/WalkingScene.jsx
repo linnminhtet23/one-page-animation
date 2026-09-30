@@ -24,7 +24,7 @@ export function WalkingScene({
           src={background}
           alt=""
           draggable="false"
-          loading="lazy"
+          loading="eager"
           decoding="async"
         />
       </div>
@@ -45,7 +45,7 @@ export function WalkingScene({
         ))}
       </section>
 
-      <WalkingRig />
+      <WalkingRig loading="eager" />
     </>
   )
 }

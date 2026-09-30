@@ -14,13 +14,29 @@
   animation: loader-travel 1.25s ease-in-out infinite alternate;
 }
 
+.loader-character-wrap .loader-walking-rig,
+.loader-character-wrap .loader-shadow {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .2s ease-out;
+}
+
+.loader-character-wrap.is-ready .loader-walking-rig {
+  visibility: visible;
+  opacity: 1;
+}
+
+.loader-character-wrap.is-ready .loader-shadow {
+  visibility: visible;
+  opacity: .75;
+}
+
 .site-loader .loader-walking-rig {
   position: absolute;
   z-index: 2;
   inset: 0;
   width: 100%;
   aspect-ratio: 1000 / 1700;
-  opacity: 1;
   transform: none;
 }
 

@@ -1,6 +1,23 @@
+import { useEffect, useRef, useState } from 'react'
 import { WalkingRig } from './WalkingRig'
+import { waitForImages } from '../utils/waitForImages'
 
 export function SiteLoader({ visible, leaving, label = 'Loading Paw Parade' }) {
+  const characterRef = useRef(null)
+  const [characterReady, setCharacterReady] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+
+    waitForImages(characterRef.current).then(() => {
+      if (!cancelled) setCharacterReady(true)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   if (!visible) return null
 
   return (
@@ -9,7 +26,11 @@ export function SiteLoader({ visible, leaving, label = 'Loading Paw Parade' }) {
       role="status"
       aria-label={label}
     >
-      <div className="loader-character-wrap" aria-hidden="true">
+      <div
+        className={`loader-character-wrap${characterReady ? ' is-ready' : ''}`}
+        ref={characterRef}
+        aria-hidden="true"
+      >
         <WalkingRig className="loader-walking-rig" loading="eager" />
         <span className="loader-shadow" />
       </div>
